@@ -9,7 +9,9 @@ objp[:,:2] = np.mgrid[0:7,0:6].T.reshape(-1,2)
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
-images = glob.glob('*.jpg')
+
+# images = glob.glob('*.jpg')
+images = glob.glob('../Camera Calibration/*.jpg')
 for fname in images:
     img = cv.imread(fname)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -25,4 +27,33 @@ for fname in images:
         cv.imshow('img', img)
         cv.waitKey(500)
 cv.destroyAllWindows()
+
+# Calibration
+ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
+
+img = cv.imread('../Camera Calibration/left12.jpg')
+h,  w = img.shape[:2]
+newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+
+# undistort
+dst = cv.undistort(img, mtx, dist, None, newcameramtx)
+# crop the image
+x, y, w, h = roi
+dst = dst[y:y+h, x:x+w]
+cv.imwrite('../Camera Calibration Result/calibresult.png', dst)
+
+# # Undistortion - taking new image
+# img = cv.imread('left12.jpg')
+# h,  w = img.shape[:2]
+# newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+#
+# # Undistortion - using cv.undistort()
+# dst = cv.undistort(img, mtx, dist, None, newcameramtx)
+#
+# # Undistortion - crop the image
+# x, y, w, h = roi
+# dst = dst[y:y+h, x:x+w]
+# cv.imwrite('calbresult.png', dst)
+
+# here i should save camera matrix and distortion coefficients using sacez or savetxt from numpy
 
