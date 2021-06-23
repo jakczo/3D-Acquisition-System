@@ -12,11 +12,11 @@ while True:
     ret2, frame2 = video_capture_2.read()
 
     # if (ret0):
-    #     # Display the resulting frame
-    #     cv.imshow('Cam 0', frame0)
+    #     Display the resulting frame
+    #      cv.imshow('Cam 0', frame0)
 
     if ret1:
-        # Display the resulting frame
+    #     Display the resulting frame
         cv.imshow('Cam 1', frame1)
 
     if ret2:
